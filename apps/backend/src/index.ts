@@ -1,20 +1,45 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
+import path from 'path';
+import { router } from "./routes";
+import {connectToDatabase, UrlModel }from "@repo/db"; 
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware to parse JSON
+
 app.use(express.json());
 
-// Sample route
+app.use("/api",router); 
+
 app.get("/", (req: Request, res: Response) => {
   res.send("URL Shortener backend is running!");
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+(async () => {
+  try {
+    await connectToDatabase();
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to connect to MongoDB:", error);
+    process.exit(1);
+  }
+})();
+
+// async function bootstrap() {
+//   try {
+//     await connectToDatabase();
+//     app.listen(PORT, () => {
+//       console.log(`Server is running on port ${PORT}`);
+//     });
+//   } catch (err) {
+//     console.error("Failed to connect to MongoDB:", err);
+//     process.exit(1);
+//   }
+// }
+
+// bootstrap(); // manual call
