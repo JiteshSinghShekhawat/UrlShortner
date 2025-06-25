@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { UrlModel } from './models/url.model';
 
+
 const connectToDatabase = async () => {
   const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/urlshortner';
 
