@@ -1,20 +1,16 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "composite": true,
     "target": "es2016",
     "module": "commonjs",
     "rootDir": "./src",
     "outDir": "./dist",
     "declaration": true,
-    "declarationDir": "./",
+    "declarationDir": "./dist",
+    "composite": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["src"],
-  "references": [
-    { "path": "../../packages/db" }
-  ]
+  "include": ["src"]
 }
