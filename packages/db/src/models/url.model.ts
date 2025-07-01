@@ -1,19 +1,28 @@
 import mongoose from 'mongoose';
+import { CounterModel } from './counter.model';
 
 const urlSchema = new mongoose.Schema({
   longUrl: {
     type: String,
     required: true,
   },
-  shortUrl: {
-    type: String,
-    required: true,
-    unique: true
+  shortId: {
+    type: Number,
+    unique: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
+});
+
+urlSchema.pre('save', async function (next) {
+  if (!this.isNew) return next();
+
+  const counter = await CounterModel.findByIdAndUpdate(
+    { _id: 'url' },
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true }
+  );
+
+  this.shortId = counter.seq;
+  next();
 });
 
 export const UrlModel = mongoose.model('Url', urlSchema);
