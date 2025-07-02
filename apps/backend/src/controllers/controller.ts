@@ -4,7 +4,9 @@ import { createShortUrl, urlToNumber } from "./generation";
 
 export const shortUrl = async (req: Request, res: Response) => {
   const { sUrl } = req.params;
-
+  if(!sUrl){
+      return res.status(404).json({ message: "Please Pass ShortUrl.. " });
+  }
   try {
     const shortId = urlToNumber(sUrl); 
     const found = await findLongUrl(shortId);
