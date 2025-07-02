@@ -49,7 +49,7 @@ function App() {
         {shortenedUrl && (
           <div className="result">
             <p>Shortened URL:</p>
-            <a href={`${import.meta.env.VITE_BACKEND_URI}+${shortenedUrl}`} target="_blank" rel="noopener noreferrer">
+            <a href={`${import.meta.env.VITE_BACKEND_URI}${shortenedUrl}`} target="_blank" rel="noopener noreferrer">
               {shortenedUrl}
             </a>
           </div>
