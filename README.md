@@ -1,12 +1,15 @@
-# URL Shortener
 
-This project is a URL shortener service that converts long URLs into short, easy-to-share links. It's built with a unique architecture that focuses on scalability and efficiency.
+This project is a URL shortener service that converts long URLs into short, easy-to-share links. It's built with a unique architecture that focuses on **scalability, efficiency, and stateless design** using a custom base-62 encoding strategy.
 
 ## Features
 
-*   **Shorten Long URLs:** Convert any long URL into a compact, 7-character short link.
-*   **Scalable Architecture:** Designed for horizontal scaling with a stateless backend.
-*   **High Capacity:** Can generate up to 3.5 trillion unique short URLs.
+- 🔗 **Shorten Long URLs**: Convert any long URL into a compact, 7-character short link.
+- ⚙️ **Stateless Backend**: No need to store both short and long URLs — backend just processes requests.
+- 📦 **Scalable Architecture**: Designed for horizontal scaling with no server-to-server dependencies.
+- 🚀 **High Capacity**: Supports up to 3.5 trillion unique short URLs.
+- 🧠 **Custom Encoding**: Uses a shuffled base-62 character set and directional encoding for added obscurity.
+
+---
 
 ## How It Works
 
