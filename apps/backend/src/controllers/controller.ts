@@ -1,17 +1,14 @@
 import { Request, Response } from "express";
 import { findLongUrl, insertLongUrl } from "../models";
-import { generateString, urlToNumber } from "./generation";
+import { createShortUrl, urlToNumber } from "./generation";
 
 export const shortUrl = async (req: Request, res: Response) => {
   const { sUrl } = req.params;
-  console.log(sUrl); 
+
   try {
     const shortId = urlToNumber(sUrl); 
-    console.log(shortId); 
     const found = await findLongUrl(shortId);
 
-
-    console.log(found); 
     if (found && found.longUrl) {
       return res.redirect(found.longUrl);
     } else {
@@ -33,7 +30,7 @@ export const createUrl = async (req: Request, res: Response) => {
 
     let resp = newEntry.toObject() as any;
 
-    if (newEntry.shortId) resp.shortUrl = generateString(newEntry.shortId);
+    if (newEntry.shortId) resp.shortUrl = createShortUrl(newEntry.shortId);
     else{
       return res.status(500).json({ message: "Some Internal Server Error" });
     }
