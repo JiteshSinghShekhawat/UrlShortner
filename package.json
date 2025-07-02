@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --parallel",
+    "dev:backend": "turbo run dev --filter=backend",
+    "dev:frontend": "turbo run dev --filter=frontend",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
@@ -23,6 +25,7 @@
   "packageManager": "npm@10.8.2",
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "apps/frontEnd"
   ]
 }
