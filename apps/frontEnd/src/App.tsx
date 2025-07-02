@@ -12,7 +12,7 @@ function App() {
     setShortenedUrl('');
 
     try {
-      const response = await fetch('http://localhost:8001/api/create-url', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URI}/create-url`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ function App() {
         {shortenedUrl && (
           <div className="result">
             <p>Shortened URL:</p>
-            <a href={"http://localhost:8001/api/"+shortenedUrl} target="_blank" rel="noopener noreferrer">
+            <a href={`${import.meta.env.VITE_BACKEND_URI}+${shortenedUrl}`} target="_blank" rel="noopener noreferrer">
               {shortenedUrl}
             </a>
           </div>
