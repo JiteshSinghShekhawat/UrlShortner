@@ -1,135 +1,72 @@
-# Turborepo starter
+How to run the project  :- 
+1. install the dependencies :- npm install 
+2. add .env 
+3. build the repo :- npx turbo run build
+4. Run the files :- npx turbo run dev
 
-This Turborepo starter is maintained by the Turborepo core team.
 
-## Using this example
 
-Run the following command:
+in this project there are three working ends :- 
+1. frontEnd
+2. BackEnd
+3. Database (mongoDb)
 
-```sh
-npx create-turbo@latest
-```
 
-## What's inside?
+1. FRONT END :- 
 
-This Turborepo includes the following packages/apps:
+    It is simply taking a input from user the uri they want to make short and sending that to the backEnd in order to get a shortUri and return it to user . So in short there is not much in frontEnd simply calling an post request to a route at backEnd and recieving shortUri as  response and then returning it to user. 
 
-### Apps and Packages
+    Now User can use that shortUri and make a get request to the backEnd simply through browser in this format ${BackenRoute}/api/:shortUri  i.e it will send a get request and redirect you to the longUri. 
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
-### Utilities
+2. Back End && Database:- 
+    Here Comes the Interesting Part where are the works happens , This i have designed as unique it is not as a usuall uri converter in which we store both shortUri and longUri in the database in this we only store longUri and a unique no with it ,so now that whenver we want to fetch anything through to the database we differentiate through that no , now we don't provide that no to user directly  then this no is converted in to 62chars unique string now whenever user want to fetch the longUri he will provide us that chars unique string that consists of [a->z] + [A->Z] + [0->9] now we will convert this string into no and then fetch it in the database , now you all would be wondering what's the benefit of this basically this makes my server stateless as we are not giving each server a range server simply sends the request to the database and we recieve a unique no which we convert into string and provide it to the user so in this we can do horizontall scalling as much as we want as no server is dependent on each other as traditionally we use to give each server a range and if one of them fails the range is wasted as we can't allot that range to another as we don't no how much of it has been used to so basically that whole range is wasted. 
 
-This Turborepo has some additional tools already setup for you:
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
 
-### Build
+HOW URI'S ARE GENERATED FROM NO :- 
 
-To build all apps and packages, run the following command:
+    So for this i am going for a simple pattern rather issuing directly in order to make the unique string's diverse and not directly in serious for odd no i am issuing from the starting and for even i am issuing it from back side of the digits we have
 
-```
-cd my-turborepo
+    so for ex avaiableChars:- [a,b,c,...,z,A,...,Z,1,2,...,9]
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+    shortId = 1 so string would be = aaaaaab
+    shortId = 2 so string would be = 9999997
+    shortId = 3 so string would be = aaaaaad 
+    ...
+    ...
+    similary issuing it from both end 
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
+    now inorder to make it more unique i have just jumble the avaibleChars[] (Although i know still they are guessable but a little bit more struggle in order to guess). 
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+How i am generating unique ShortId in database :- 
+    since my schema is like :- {
+        longUrl : string 
+        shortId : number (id)
+    }
+    id {
+        no : number
+    }
+    i have also created a table which store a no so basically whenever i put the value in the table i simmply fetch the no from id and increase the id by 1 and as it is also a critical section so that ensures that my entry is unique , and no id can clash each other i did this because i wanted it to be independt from backend so simply backend sends the request with only longUri and everything in database should be independent and response contains the unique id, this way my repo works. 
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
 
-### Develop
+So how much unique string we can generate ?? 
 
-To develop all apps and packages, run the following command:
+we are generating the shortUri of 7 digits which consists of 62 chars that consists of  [a->z] + [A->Z] + [0->9]  
 
-```
-cd my-turborepo
+so basically total no of unique strings are = 62**7 === 3.5 trillion 
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+so the question arise is this enough will it be less than our requirements ?? 
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+so for example if we are having requesting of 1000 uri's per second (I think that is the most we can recieve as we ain't that big companies)
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+for each year required at this rate  ==> 1000*60*60*24*365 == 31.5 billions uri's would be required per year at this rate
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+    3.5 trillion/ 31.5 == 11.11 years we can issue uri at this rate although we won't be having 1000 uri request per second so i considered the worst case . 
 
-### Remote Caching
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+THANK YOU!!!!
