@@ -1,3 +1,4 @@
+# URL SHORTNER
 
 This project is a URL shortener service that converts long URLs into short, easy-to-share links. It's built with a unique architecture that focuses on **scalability, efficiency, and stateless design** using a custom base-62 encoding strategy.
 
